@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     private var lemonTree = LemonTree()
     private var lemonImage: ImageView? = null
+    private var lemonText: TextView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,15 +63,14 @@ class MainActivity : AppCompatActivity() {
             squeezeCount = savedInstanceState.getInt(SQUEEZE_COUNT, -1)
         }
         // === END IF STATEMENT ===
-
         lemonImage = findViewById(R.id.image_lemon_state)
         setViewElements()
         lemonImage!!.setOnClickListener {
             // TODO: call the method that handles the state when the image is clicked
+            clickLemonImage()
         }
         lemonImage!!.setOnLongClickListener {
-            // TODO: replace 'false' with a call to the function that shows the squeeze count
-            false
+            showSnackbar()
         }
     }
 
@@ -111,6 +111,32 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: lastly, before the function terminates we need to set the view elements so that the
         //  UI can reflect the correct state
+        if (lemonadeState == SELECT) {
+            lemonSize = lemonTree.pick()
+            squeezeCount = 0
+            lemonadeState = SQUEEZE
+            lemonImage!!.setImageResource(R.drawable.lemon_squeeze)
+            lemonText!!.setText(R.string.lemon_squeeze)
+        }
+        if(lemonadeState == SQUEEZE) {
+            squeezeCount+=1
+            lemonSize-=1
+            if(lemonSize == 0) {
+                lemonSize = -1
+                lemonadeState = DRINK
+                lemonImage!!.setImageResource(R.drawable.lemon_drink)
+                lemonText!!.setText(R.string.lemon_drink)
+            }
+        }
+        if(lemonadeState == DRINK) {
+            lemonadeState = RESTART
+            lemonImage!!.setImageResource(R.drawable.lemon_restart)
+            lemonText!!.setText(R.string.lemon_empty_glass)
+        }
+        if(lemonadeState == RESTART) {
+            lemonadeState = SELECT
+            lemonImage!!.setImageResource(R.drawable.lemon_tree)
+        }
     }
 
     /**
