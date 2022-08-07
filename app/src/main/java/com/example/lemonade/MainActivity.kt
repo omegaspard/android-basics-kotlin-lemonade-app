@@ -20,9 +20,11 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
+import java.util.logging.Logger
 
 class MainActivity : AppCompatActivity() {
 
+    val Log = Logger.getLogger(MainActivity::class.java.name)
     /**
      * DO NOT ALTER ANY VARIABLE OR VALUE NAMES OR THEIR INITIAL VALUES.
      *
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         }
         // === END IF STATEMENT ===
         lemonImage = findViewById(R.id.image_lemon_state)
+        lemonText = findViewById(R.id.text_action)
         setViewElements()
         lemonImage!!.setOnClickListener {
             // TODO: call the method that handles the state when the image is clicked
@@ -111,6 +114,9 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: lastly, before the function terminates we need to set the view elements so that the
         //  UI can reflect the correct state
+        Log.info("State is $lemonadeState")
+        Log.info("squeezeCount is $squeezeCount")
+        Log.info("lemonSize is $lemonSize")
         if (lemonadeState == SELECT) {
             lemonSize = lemonTree.pick()
             squeezeCount = 0
@@ -118,25 +124,31 @@ class MainActivity : AppCompatActivity() {
             lemonImage!!.setImageResource(R.drawable.lemon_squeeze)
             lemonText!!.setText(R.string.lemon_squeeze)
         }
-        if(lemonadeState == SQUEEZE) {
+        else if(lemonadeState == SQUEEZE) {
             squeezeCount+=1
             lemonSize-=1
             if(lemonSize == 0) {
                 lemonSize = -1
                 lemonadeState = DRINK
+                Log.info("(Inside SQUEEZE) State is $lemonadeState")
                 lemonImage!!.setImageResource(R.drawable.lemon_drink)
                 lemonText!!.setText(R.string.lemon_drink)
             }
         }
-        if(lemonadeState == DRINK) {
+        else if(lemonadeState == DRINK) {
+            Log.info("Inside DRKINK")
             lemonadeState = RESTART
             lemonImage!!.setImageResource(R.drawable.lemon_restart)
             lemonText!!.setText(R.string.lemon_empty_glass)
         }
-        if(lemonadeState == RESTART) {
+        else if(lemonadeState == RESTART) {
             lemonadeState = SELECT
             lemonImage!!.setImageResource(R.drawable.lemon_tree)
+            lemonText!!.setText(R.string.lemon_select)
         }
+        Log.info("After condtion: State is $lemonadeState")
+        Log.info("After condtion: squeezeCount is $squeezeCount")
+        Log.info("After condtion: lemonSize is $lemonSize")
     }
 
     /**
